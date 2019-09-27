@@ -1,0 +1,26 @@
+// How you can get the Certifications associated with CertificationGroup objects.  This is often useful for reporting.
+// You'll want to fill in the correct CertificationGroup ID or Name to start:
+
+String certGroupReference = "Some Certification Name or ID";
+
+CertificationGroup certGroup = context.getObject( CertificationGroup.class, certGroupReference );
+  
+QueryOptions ops = new QueryOptions();
+ops.add( Filter.eq( "certificationGroups.id", certGroup.getId() ) );
+       
+// Configure the fields you want from the certification here.  I added id and name.
+List<String> fields = new ArrayList<String>();
+fields.add( "id" );
+fields.add( "name" );
+
+// Now we search for the certifications associated withe the CertificationGroup, 
+// and return the fields we indicated above.
+// Note: A projection search is more efficient here compared to context.getObjects(...)
+Iterator<Object[]> iterator = context.search( Certification.class, ops, fields );       
+System.out.println( "Certifications:" );       
+if ( iterator != null && iterator.hasNext() ) {
+  Object[] result = iterator.next();
+  String certId = result[0].toString();
+  String certName = result[1].toString();
+  System.out.println( "ID [" + certId + "], Name [" + certName + "]" );
+}
